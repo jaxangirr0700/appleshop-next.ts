@@ -29,11 +29,11 @@ function Products() {
     <>
       {loading && <Loading />}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full p-4 mt-3">
         {data?.items.map((p) => (
           <div
             key={p.id}
-            className="max-w-sm border rounded-xl border-slate-300 hover:scale-105 transition-all 0.5s relative"
+            className="max-w-sm  rounded-xl  hover:scale-105 transition-all 0.5s relative"
           >
             <Card
               hoverable
@@ -41,10 +41,10 @@ function Products() {
                 <Link href={`/product/${p.id}`}>
                   <Image
                     width={100}
-                    height={100}
+                    height={300}
                     alt={p.name}
                     src={p.imageUrl}
-                    className="object-cover h-60 w-full"
+                    className="object-bottom  h-60 w-full"
                   />
                 </Link>
               }
@@ -67,7 +67,6 @@ function Products() {
                 className="cursor-pointer"
               />
             </div>
-            _
           </div>
         ))}
       </div>

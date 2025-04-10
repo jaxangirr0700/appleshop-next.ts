@@ -2,15 +2,15 @@ import Link from "next/link";
 import {
   SearchOutlined,
   MenuOutlined,
-  UserOutlined,
   HeartOutlined,
-  ShoppingCartOutlined,
   EnvironmentOutlined,
   CloseOutlined,
   AppleFilled,
 } from "@ant-design/icons";
 import { Input, Button } from "antd";
 import { useState } from "react";
+import UserModal from "./modals/UserModal";
+import KorzinkaModal from "./modals/KorzinkaModal";
 
 const Navbar = () => {
   const [katalogState, setKatalogState] = useState<boolean>(true);
@@ -60,17 +60,19 @@ const Navbar = () => {
           />
         </div>
         <div className="flex gap-6 items-center text-sm">
-          <div className="flex flex-col items-center">
-            <UserOutlined className="text-xl" />
-            <span>Kirish</span>
-          </div>
-          <div className="flex flex-col items-center">
+          <UserModal />
+
+          <Button
+            type="text"
+            style={{ width: 100, height: 50 }}
+            className="flex flex-col items-center"
+          >
             <HeartOutlined className="text-xl" />
-            <span>Sevimlilar</span>
-          </div>
+            Sevimlilar
+          </Button>
+
           <div className="flex flex-col items-center">
-            <ShoppingCartOutlined className="text-xl" />
-            <span>Savatcha</span>
+            <KorzinkaModal />
           </div>
         </div>
       </div>
