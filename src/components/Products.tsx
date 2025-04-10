@@ -1,4 +1,3 @@
-import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import Image from "next/image";
 import Loading from "./Loading";
 import { DataType } from "@/types";
 import Link from "next/link";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 function Products() {
   const [data, setData] = useState<DataType | null>(null);
