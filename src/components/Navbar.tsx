@@ -11,9 +11,13 @@ import { Input, Button } from "antd";
 import { useState } from "react";
 import UserModal from "./modals/UserModal";
 import KorzinkaModal from "./modals/KorzinkaModal";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setSearch } from "@/store/slices/cart.slice";
 
 const Navbar = () => {
   const [katalogState, setKatalogState] = useState<boolean>(true);
+  const state = useAppSelector((state) => state.product.search);
+  const dispatch = useAppDispatch();
   return (
     <header className="w-full">
       <div className="bg-[#2d2d2d] text-white text-xs px-4 md:px-20 py-1 flex flex-wrap justify-between items-center">
@@ -45,7 +49,6 @@ const Navbar = () => {
             className="bg-yellow-400 border-none hover:bg-yellow-500"
             onClick={() => {
               setKatalogState(!katalogState);
-              console.log(katalogState);
             }}
           >
             Katalog
@@ -57,6 +60,10 @@ const Navbar = () => {
             suffix={<SearchOutlined />}
             className="rounded-lg py-2"
             size="large"
+            onChange={(e) => {
+              dispatch(setSearch(e.currentTarget.value));
+              console.log(state);
+            }}
           />
         </div>
         <div className="flex gap-6 items-center text-sm">

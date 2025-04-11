@@ -9,12 +9,12 @@ export type ProductType = {
   stock: number;
 };
 export type CategoriesType = {
-    createdAt?: string;
-    description?: string;
-    id: number;
-    name: string;
-  };
-  
+  createdAt?: string;
+  description?: string;
+  id: number;
+  name: string;
+};
+
 export type DataType = {
   items: ProductType[];
   limit: number;

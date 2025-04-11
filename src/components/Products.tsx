@@ -6,14 +6,21 @@ import Loading from "./Loading";
 import { DataType } from "@/types";
 import Link from "next/link";
 import { ShoppingCartOutlined } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { addToCart } from "@/store/slices/cart.slice";
 
 function Products() {
   const [data, setData] = useState<DataType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const search = useAppSelector((state) => state.product.search);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     axios
-      .get(`https://nt.softly.uz/api/front/products`)
+      .get(
+        `https://nt.softly.uz/api/front/products?search=${search}&page=1&limit=10`
+      )
       .then((res) => {
         setData(res.data);
       })
@@ -23,7 +30,7 @@ function Products() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [search]);
 
   return (
     <>
@@ -63,6 +70,9 @@ function Products() {
             </Card>
             <div className=" absolute right-5 bottom-6">
               <ShoppingCartOutlined
+                onClick={() => {
+                  dispatch(addToCart(p));
+                }}
                 style={{ width: 40, fontSize: 28 }}
                 className="cursor-pointer"
               />

@@ -1,6 +1,5 @@
 import { CategoriesType } from "@/types";
 import axios from "axios";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function Categories() {
@@ -21,11 +20,11 @@ function Categories() {
     <div>
       <ul className="flex items-center flex-wrap gap-2 justify-between py-4">
         {categories.map((category) => (
-          <Link href={`/categories/${category.id}`} key={category.id}>
+          <div key={category.id} className="cursor-none">
             <div className="font-bold text-xl hover:scale-105 border border-gray-300 px-2 py-2 rounded-xl transition-all 0.5s">
               <span>{category.name}</span>
             </div>
-          </Link>
+          </div>
         ))}
       </ul>
     </div>
