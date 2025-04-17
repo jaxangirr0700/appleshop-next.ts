@@ -8,10 +8,10 @@ export default function Document() {
       <Head>
         <title>AppleShop</title>
         <meta content="Raxmatullayev Jaxongir" name="description" />
-        <link
+        {/* <link
           rel="icon"
           href="https://e7.pngegg.com/pngimages/912/682/png-clipart-apple-logo-brand-apple-company-trademark-thumbnail.png"
-        />
+        /> */}
       </Head>
       <body className="antialiased">
         <Provider store={store}>
