@@ -2,6 +2,7 @@ import Loading from "@/components/Loading";
 import Product from "@/components/Product";
 import { DataType } from "@/types";
 import axios from "axios";
+import Head from "next/head";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -51,6 +52,10 @@ function CategoryPage() {
 
   return (
     <div className="max-w-[1440px] m-auto">
+      <Head>
+        <title>CagtegoryPage</title>
+        <meta content={products?.items[0].name} name="description" />
+      </Head>
       <div>
         <h1 className="text-2xl font-bold">Kategoriya bo‘yicha mahsulotlar</h1>
         <div className="grid grid-cols-3 items-center justify-between">

@@ -1,5 +1,6 @@
 import Product from "@/components/Product";
 import { useAppSelector } from "@/store/hooks";
+import Head from "next/head";
 import React from "react";
 
 function LikesPage() {
@@ -8,6 +9,10 @@ function LikesPage() {
 
   return (
     <div className="max-w-[1440px] m-auto">
+      <Head>
+        <title>LikedPage</title>
+        <meta content={likeItems[0]?.name} name="description" />
+      </Head>
       {likeItems.length === 0 ? (
         <p className="text-2xl font-bold ">
           Hozirda sizda sevimli mahsulotlar yo{"'"}q.
