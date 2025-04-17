@@ -4,6 +4,7 @@ import axios from "axios";
 import Loading from "@/components/Loading";
 import { ProductType } from "@/types";
 import Product from "@/components/Product";
+import Head from "next/head";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -54,6 +55,14 @@ function ProductDetail() {
   return (
     <div className="max-w-[1440px] m-auto flex items-center  gap-1 flex-col">
       {product && <Product data={product} />}
+      <Head>
+        <title>{product?.name}</title>
+        <meta content="Raxmatullayev Jaxongir" name="description" />
+        <link
+          rel="icon"
+          href="https://e7.pngegg.com/pngimages/912/682/png-clipart-apple-logo-brand-apple-company-trademark-thumbnail.png"
+        />
+      </Head>
       {similarProducts.length > 0 && (
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Similar Products</h2>
