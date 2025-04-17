@@ -17,7 +17,12 @@ function CustomModal({
     setIsModalOpen(false);
   };
   return (
-    <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+    <Modal
+      open={isModalOpen}
+      onOk={handleOk}
+      onCancel={handleCancel}
+      footer={null}
+    >
       {children}
     </Modal>
   );

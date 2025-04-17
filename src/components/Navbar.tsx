@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   SearchOutlined,
   MenuOutlined,
@@ -13,10 +12,12 @@ import UserModal from "./modals/UserModal";
 import KorzinkaModal from "./modals/KorzinkaModal";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setSearch } from "@/store/slices/cart.slice";
+import Link from "next/link";
 
 const Navbar = () => {
   const [katalogState, setKatalogState] = useState<boolean>(true);
   const state = useAppSelector((state) => state.product.search);
+  const likeItems = useAppSelector((state) => state.like_product.items);
   const dispatch = useAppDispatch();
   return (
     <header className="w-full">
@@ -69,18 +70,24 @@ const Navbar = () => {
         <div className="flex gap-6 items-center text-sm">
           <UserModal />
 
-          <Button
-            type="text"
-            style={{ width: 100, height: 50 }}
-            className="flex flex-col items-center"
-          >
-            <HeartOutlined className="text-xl" />
-            Sevimlilar
-          </Button>
+          <Link href={"/like"}>
+            {" "}
+            <Button
+              type="text"
+              style={{ width: 100, height: 50 }}
+              className="flex flex-col items-center relative"
+            >
+              <HeartOutlined className="text-xl" />
+              Sevimlilar{" "}
+              {likeItems.length > 0 && (
+                <span className="bg-slate-900 text-white px-2 py-1 rounded-full text-xl absolute top-[-10px] right-[-8px]">
+                  {likeItems.length}{" "}
+                </span>
+              )}
+            </Button>
+          </Link>
 
-          <div className="flex flex-col items-center">
-            <KorzinkaModal />
-          </div>
+          <KorzinkaModal />
         </div>
       </div>
     </header>

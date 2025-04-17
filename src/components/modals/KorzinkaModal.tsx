@@ -4,7 +4,11 @@ import CustomModal from "./CustomModal";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Image from "next/image";
-import { decrementQty, incrementQty } from "@/store/slices/cart.slice";
+import {
+  decrementQty,
+  deleteCart,
+  incrementQty,
+} from "@/store/slices/cart.slice";
 
 function KorzinkaModal() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -65,7 +69,13 @@ function KorzinkaModal() {
                       +
                     </button>
                   </div>
-                </div>
+                </div>{" "}
+                <button
+                  onClick={() => dispatch(deleteCart(item.id))}
+                  className="bg-gray-100 px-2 rounded border border-red-400  py-1 "
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>

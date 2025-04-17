@@ -1,11 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/components/Navbar";
-import Categories from "@/components/Categories";
 import Banner from "@/components/Banners";
 import Products from "@/components/Products";
-import Footer from "@/components/Footer";
-import { Provider } from "react-redux";
-import { store } from "@/store/store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,13 +17,8 @@ export default function Home() {
     <div
       className={`${geistSans.className} ${geistMono.className} max-w-[1440px] m-auto font-bold`}
     >
-      <Provider store={store}>
-        <Navbar />
-        <Categories />
-        <Banner />
-        <Products />
-        <Footer />
-      </Provider>
+      <Banner />
+      <Products />
     </div>
   );
 }
