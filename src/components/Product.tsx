@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToCart } from "@/store/slices/cart.slice";
 import { removeLike, toggleLike } from "@/store/slices/like.slice";
 import { ProductType } from "@/types";
-import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+// import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -51,10 +51,10 @@ function Product({ data }: { data: ProductType | null }) {
           className="flex items-center gap-2 mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 absolute left-5 bottom-2 cursor-pointer"
         >
           Stavatcha
-          <ShoppingCartOutlined
+          {/* <ShoppingCartOutlined
             style={{ width: 40, fontSize: 28 }}
             className=" hover:scale-110 transition-transform duration-500"
-          />
+          /> */}
         </button>{" "}
         <button
           onClick={() => dispatch(addToCart(data))}
@@ -64,10 +64,10 @@ function Product({ data }: { data: ProductType | null }) {
           disabled={isProductInCart}
         >
           Stavatcha
-          <ShoppingCartOutlined
+          {/* <ShoppingCartOutlined
             style={{ width: 40, fontSize: 28 }}
             className="hover:scale-110 transition-transform duration-500"
-          />
+          /> */}
         </button>
         <button
           onClick={() => toggleLikePage(data)}
@@ -75,10 +75,11 @@ function Product({ data }: { data: ProductType | null }) {
             isProductLiked ? "text-red-500" : ""
           }`}
         >
-          <HeartOutlined
+          {/* <HeartOutlined
             style={{ width: 40, fontSize: 28 }}
             className="cursor-pointer hover:scale-110 transition-transform duration-500"
-          />
+          /> */}
+          Sevimli
         </button>
       </div>
     </div>

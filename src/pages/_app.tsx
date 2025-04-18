@@ -5,6 +5,7 @@ import { store } from "@/store/store";
 import Categories from "@/components/Categories";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,6 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Categories />
       <Component {...pageProps} />
       <Footer />
+      <Toaster />
     </Provider>
   );
 }

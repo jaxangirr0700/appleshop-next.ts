@@ -1,14 +1,3 @@
-import {
-  AppstoreFilled,
-  FacebookFilled,
-  GoogleOutlined,
-  InstagramOutlined,
-  MoneyCollectOutlined,
-  ProductOutlined,
-  QrcodeOutlined,
-  TwitterSquareFilled,
-  YoutubeFilled,
-} from "@ant-design/icons";
 import React from "react";
 
 export default function Footer() {
@@ -22,16 +11,16 @@ export default function Footer() {
           <p className="text-xl font-bold mb-2">+998 71 209 99 44</p>
           <div className="flex space-x-3 mt-4">
             <a href="#" className="bg-gray-700 p-2 rounded">
-              <FacebookFilled />
+              {/* <FacebookFilled /> */}
             </a>
             <a href="#" className="bg-gray-700 p-2 rounded">
-              <YoutubeFilled />
+              {/* <YoutubeFilled /> */}
             </a>
             <a href="#" className="bg-gray-700 p-2 rounded">
-              <TwitterSquareFilled />
+              {/* <TwitterSquareFilled /> */}
             </a>
             <a href="#" className="bg-gray-700 p-2 rounded">
-              <InstagramOutlined />
+              {/* <InstagramOutlined /> */}
             </a>
           </div>
         </div>
@@ -87,12 +76,12 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold mb-2">Ilovani yuklab olish</h4>
           <div className="flex flex-col items-start space-y-2">
-            <QrcodeOutlined /> QR
+            {/* <QrcodeOutlined /> QR */}
             <div className="flex space-x-2">
-              <GoogleOutlined />
+              {/* <GoogleOutlined /> */}
 
-              <AppstoreFilled />
-              <ProductOutlined />
+              {/* <AppstoreFilled /> */}
+              {/* <ProductOutlined /> */}
             </div>
             <p className="text-xs">Yuklab olish uchun QR-kodni skanerlang</p>
           </div>
@@ -103,10 +92,10 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 py-4 text-xs text-gray-400 flex flex-col md:flex-row justify-between items-center">
           <p>2016–2025 © texnomart.uz. Barcha huquqlar himoyalangan.</p>
           <div className="flex space-x-2 mt-2 md:mt-0">
+            {/* <MoneyCollectOutlined />
             <MoneyCollectOutlined />
             <MoneyCollectOutlined />
-            <MoneyCollectOutlined />
-            <MoneyCollectOutlined />
+            <MoneyCollectOutlined /> */}
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
-import { Button, Modal } from "antd";
-import Image from "next/image";
+// import Image from "next/image";
 import { useState } from "react";
 
 const initialProducts = [
@@ -29,45 +28,43 @@ function SavatchaModal() {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
+  // const handleOk = () => {
+  //   setIsModalVisible(false);
+  // };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  // };
 
-  const handleAdd = (id: number) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id
-          ? { ...product, quantity: product.quantity + 1 }
-          : product
-      )
-    );
-  };
+  // const handleAdd = (id: number) => {
+  //   setProducts((prev) =>
+  //     prev.map((product) =>
+  //       product.id === id
+  //         ? { ...product, quantity: product.quantity + 1 }
+  //         : product
+  //     )
+  //   );
+  // };
 
-  const handleRemove = (id: number) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id
-          ? { ...product, quantity: Math.max(product.quantity - 1, 1) }
-          : product
-      )
-    );
-  };
+  // const handleRemove = (id: number) => {
+  //   setProducts((prev) =>
+  //     prev.map((product) =>
+  //       product.id === id
+  //         ? { ...product, quantity: Math.max(product.quantity - 1, 1) }
+  //         : product
+  //     )
+  //   );
+  // };
 
-  const handleDelete = (id: number) => {
-    setProducts((prev) => prev.filter((product) => product.id !== id));
-  };
+  // const handleDelete = (id: number) => {
+  //   setProducts((prev) => prev.filter((product) => product.id !== id));
+  // };
 
   return (
     <div>
-      <Button type="primary" onClick={showModal}>
-        Savatcha
-      </Button>
+      <button onClick={showModal}>Savatcha</button>
 
-      <Modal
+      {/* <Modal
         title="Savatcha"
         visible={isModalVisible}
         onOk={handleOk}
@@ -104,7 +101,7 @@ function SavatchaModal() {
             </div>
           </div>
         ))}
-      </Modal>
+      </Modal> */}
     </div>
   );
 }
