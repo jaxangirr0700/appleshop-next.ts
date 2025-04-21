@@ -64,7 +64,7 @@ const Navbar = () => {
               Sevimlilar
               {likeItems.length > 0 && (
                 <span className="bg-slate-900 text-white px-2 py-1 rounded-full text-xl absolute -top-4 -right-4">
-                  {likeItems.length}{" "}
+                  {likeItems.length}
                 </span>
               )}
             </Button>

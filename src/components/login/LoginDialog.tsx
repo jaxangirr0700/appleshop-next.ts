@@ -5,8 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/store/hooks";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { LoginForm } from "./LoginForm";
 import {
   DropdownMenu,
@@ -16,46 +16,48 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { logout, UserType } from "@/store/slices/auth.slice";
+import { logout } from "@/store/slices/auth.slice";
+import { useRouter } from "next/router";
 
 export function LoginDialog() {
   const [open, setOpen] = useState<boolean>(false);
-  const [authState, setAuthState] = useState<UserType>();
+
+  const user = useAppSelector((state) => state.auth.user);
+
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const lsAuth = localStorage.getItem("auth");
-      if (lsAuth) {
-        try {
-          const auth = JSON.parse(lsAuth);
-          setAuthState(auth.user);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    }
-  }, []);
+  const router = useRouter();
 
   return (
     <>
-      {authState ? (
+      {user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="default" className="cursor-pointer">
-              {authState.name}
+              {user?.email}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Sozlamalar</DropdownMenuLabel>
+            <DropdownMenuLabel className="font-bold">
+              <p className="mb-2 text-xl "> Sozlamalar</p> <p>{user.name}</p>{" "}
+              <p>{user.role}</p>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-
             <DropdownMenuCheckboxItem
               onClick={() => {
                 dispatch(logout());
+                router.push("/");
               }}
               className="cursor-pointer"
             >
               Logout
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              onClick={() => {
+                router.push("/user");
+              }}
+              className="cursor-pointer"
+            >
+              UserPage
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
