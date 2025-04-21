@@ -1,3 +1,4 @@
+// pages/product/[id].tsx
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
