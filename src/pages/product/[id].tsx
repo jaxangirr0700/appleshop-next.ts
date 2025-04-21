@@ -6,10 +6,12 @@ import Loading from "@/components/Loading";
 import { ProductType } from "@/types";
 import Product from "@/components/Product";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 function ProductDetail() {
-  const { id } = useParams();
-  const [product, setProduct] = useState<ProductType | null>(null);
+  const router = useRouter();
+  const { id } = router.query;
+  const [product, setProduct] = useState<ProductType>();
   const [similarProducts, setSimilarProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
