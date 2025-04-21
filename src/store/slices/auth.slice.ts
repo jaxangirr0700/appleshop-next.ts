@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type UserType = {
+export type UserType = {
   id: number;
   name: string;
 };
 
-type AuthSliceType = {
+export type AuthSliceType = {
   accessToken?: string;
   user?: UserType;
 };
@@ -22,8 +22,13 @@ export const authSlice = createSlice({
       state.accessToken = payload.accessToken;
       state.user = payload.user;
     },
+    logout: (state) => {
+      localStorage.removeItem("auth");
+      state.accessToken = undefined;
+      state.user = undefined;
+    },
   },
 });
 
-export const { login } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;

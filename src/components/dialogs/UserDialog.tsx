@@ -1,5 +1,5 @@
 import React from "react";
-import { LoginDialog } from "../LoginDialog";
+import { LoginDialog } from "../login/LoginDialog";
 
 function UserModal() {
   return (

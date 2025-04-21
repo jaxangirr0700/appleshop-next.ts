@@ -51,6 +51,7 @@ export function LoginForm({ onClose }: { onClose: (open: boolean) => void }) {
         toast.success("Muvaffaqqiyatli !");
         onClose(false);
         dispatch(login(res.data));
+        localStorage.setItem("auth", JSON.stringify(res.data));
       })
       .catch((e) => {
         console.log(e);

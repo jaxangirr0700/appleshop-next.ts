@@ -7,6 +7,7 @@ export type ProductType = {
   name: string;
   price: number;
   stock: number;
+  
 };
 export type CategoriesType = {
   createdAt?: string;

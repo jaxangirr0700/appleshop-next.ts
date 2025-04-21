@@ -2,6 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToCart } from "@/store/slices/cart.slice";
 import { removeLike, toggleLike } from "@/store/slices/like.slice";
 import { ProductType } from "@/types";
+import { Heart, ShoppingCart } from "lucide-react";
 // import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,29 +46,17 @@ function Product({ data }: { data: ProductType | null }) {
         <p className="text-lg font-bold mt-2">${data.price}</p>
         <p className="text-gray-800 mt-1">Stock: {data.stock}</p>
         <button
-          onClick={() => {
-            dispatch(addToCart(data));
-          }}
-          className="flex items-center gap-2 mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 absolute left-5 bottom-2 cursor-pointer"
-        >
-          Stavatcha
-          {/* <ShoppingCartOutlined
-            style={{ width: 40, fontSize: 28 }}
-            className=" hover:scale-110 transition-transform duration-500"
-          /> */}
-        </button>{" "}
-        <button
           onClick={() => dispatch(addToCart(data))}
-          className={`flex items-center gap-2 mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 absolute left-5 bottom-2 cursor-pointer ${
-            isProductInCart ? "opacity-50 cursor-not-allowed" : ""
+          className={`flex items-center gap-2 mt-4 px-4 py-2 bg-slate-900 text-white rounded hover:bg-slate-600 absolute right-9 bottom-3 transition-all duration-300 ${
+            isProductInCart ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
           }`}
           disabled={isProductInCart}
         >
           Stavatcha
-          {/* <ShoppingCartOutlined
-            style={{ width: 40, fontSize: 28 }}
-            className="hover:scale-110 transition-transform duration-500"
-          /> */}
+          <ShoppingCart
+            size={30}
+            className="hover:scale-110 transition-transform duration-300"
+          />
         </button>
         <button
           onClick={() => toggleLikePage(data)}
@@ -75,11 +64,10 @@ function Product({ data }: { data: ProductType | null }) {
             isProductLiked ? "text-red-500" : ""
           }`}
         >
-          {/* <HeartOutlined
+          <Heart
             style={{ width: 40, fontSize: 28 }}
             className="cursor-pointer hover:scale-110 transition-transform duration-500"
-          /> */}
-          Sevimli
+          />
         </button>
       </div>
     </div>

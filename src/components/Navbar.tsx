@@ -1,11 +1,12 @@
 import Link from "next/link";
-import UserModal from "./dialogs/UserModal";
-import KorzinkaModal from "./dialogs/KorzinkaModal";
+import UserModal from "./dialogs/UserDialog";
+import KorzinkaModal from "./dialogs/KorzinkaDialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { setSearch } from "@/store/slices/cart.slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState } from "react";
+import { AlignJustify, Search, X } from "lucide-react";
 
 const Navbar = () => {
   const [katalogState, setKatalogState] = useState<boolean>(true);
@@ -31,20 +32,22 @@ const Navbar = () => {
             <span className="text-slate-800 text-3xl"></span>
           </Link>
           <Button
-            // icon={!katalogState ? <CloseOutlined /> : <MenuOutlined />}
             className="bg-slate-900 border-none hover:bg-slate-500"
             onClick={() => {
               setKatalogState(!katalogState);
             }}
           >
+            {!katalogState ? <X /> : <AlignJustify />}
             Katalog
           </Button>
         </div>
-        <div className="flex-grow max-w-xl mx-4 my-2 md:my-0">
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+
           <Input
+            type="text"
             placeholder="Qidirish"
-            // suffix={<SearchOutlined />}
-            className="rounded-lg py-2"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={(e) => {
               dispatch(setSearch(e.currentTarget.value));
             }}
@@ -54,10 +57,13 @@ const Navbar = () => {
           <UserModal />
 
           <Link href={"/like"}>
-            <Button className="flex flex-col items-center relative">
-              Sevimlilar{" "}
+            <Button
+              variant={"outline"}
+              className="flex flex-col items-center relative"
+            >
+              Sevimlilar
               {likeItems.length > 0 && (
-                <span className="bg-slate-900 text-white px-2 py-1 rounded-full text-xl absolute top-[-10px] right-[-8px]">
+                <span className="bg-slate-900 text-white px-2 py-1 rounded-full text-xl absolute -top-4 -right-4">
                   {likeItems.length}{" "}
                 </span>
               )}

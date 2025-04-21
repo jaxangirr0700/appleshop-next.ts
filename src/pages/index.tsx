@@ -23,6 +23,7 @@ export const getServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const res = await axios.get("https://nt.softly.uz/api/front/banners/");
+
     const banners = res.data;
 
     return {
