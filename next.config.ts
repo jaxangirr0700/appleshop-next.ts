@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  trailingSlash: true,
+  basePath: "",
 };
 
 export default nextConfig;
