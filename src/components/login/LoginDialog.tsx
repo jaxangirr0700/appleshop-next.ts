@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -5,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { LoginForm } from "./LoginForm";
 import {
@@ -21,19 +22,22 @@ import { useRouter } from "next/router";
 
 export function LoginDialog() {
   const [open, setOpen] = useState<boolean>(false);
-
+  const [isClient, setIsClient] = useState<boolean>(false);
   const user = useAppSelector((state) => state.auth.user);
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <>
-      {user ? (
+      {isClient && user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="default" className="cursor-pointer">
-              {user?.email}
+              <p>{user?.email}</p>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">

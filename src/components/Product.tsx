@@ -37,7 +37,7 @@ function Product({ data }: { data: ProductType | null }) {
           height={300}
           alt={data.name}
           src={data.imageUrl}
-          className="object-bottom h-60 w-full hover:scale-105 transition-transform duration-500"
+          className="object-bottom h-70 w-full hover:scale-105 transition-transform duration-500"
         />
       </Link>
       <div className="mt-4">

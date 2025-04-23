@@ -22,7 +22,7 @@ function Categories() {
       <ul className="flex items-center flex-wrap gap-2 justify-between py-4">
         {categories.map((category) => (
           <Link
-            href={`/category/${category.id}`}
+            href={`/category/${category.id}?page=1`}
             key={category.id}
             className="cursor-pointer"
           >

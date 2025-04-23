@@ -3,28 +3,41 @@ import Product from "@/components/Product";
 import { DataType } from "@/types";
 import axios from "axios";
 import Head from "next/head";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import Link from "next/link";
 
 function CategoryPage() {
-  const [products, setProducts] = useState<DataType>();
+  const [productsData, setProductsData] = useState<DataType>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
   const params = useParams();
+  const searchParams = useSearchParams();
+
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "5", 10);
+  const totalPages = productsData?.totalItems || 1;
 
   useEffect(() => {
     if (!params?.id) return;
 
     setLoading(true);
-
     axios
-      .get(
-        `https://nt.softly.uz/api/front/products?categoryId=${params.id}&page=${page}&limit=10`
-      )
+      .get(`https://nt.softly.uz/api/front/products`, {
+        params: {
+          page: page,
+          limit: limit,
+          categoryId: params.id,
+        },
+      })
       .then((res) => {
-        setProducts(res.data);
-        setTotalPages(res.data?.meta?.totalPages || 1);
+        setProductsData(res.data);
       })
       .catch((err) => {
         console.error("Xatolik:", err);
@@ -32,15 +45,7 @@ function CategoryPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [params?.id, page]);
-
-  const handleNext = () => {
-    if (page < totalPages) setPage((prev) => prev + 1);
-  };
-
-  const handlePrev = () => {
-    if (page > 1) setPage((prev) => prev - 1);
-  };
+  }, [params?.id, page, limit]);
 
   if (loading) {
     return (
@@ -53,48 +58,65 @@ function CategoryPage() {
   return (
     <div className="max-w-[1440px] m-auto">
       <Head>
-        <title>CagtegoryPage</title>
-        <meta content={products?.items[0].name} name="description" />
+        <title>Category Page</title>
+        <meta
+          content={productsData?.items?.[0]?.name || "Mahsulotlar"}
+          name="description"
+        />
       </Head>
+
       <div>
-        <h1 className="text-2xl font-bold">Kategoriya bo‘yicha mahsulotlar</h1>
-        <div className="grid grid-cols-3 items-center justify-between">
-          {products?.items.map((i) => (
-            <Product data={i} key={i.id} />
+        <h1 className="text-2xl font-bold my-4">
+          Kategoriya bo‘yicha mahsulotlar
+        </h1>
+
+        <div className="grid grid-cols-3 gap-4">
+          {productsData?.items?.map((item) => (
+            <Product data={item} key={item.id} />
           ))}
         </div>
-
-        <div className="mt-6 flex items-center justify-center gap-4">
-          <button
-            onClick={handlePrev}
-            disabled={page === 1}
-            className={`px-4 py-2 rounded-full border text-sm font-medium transition ${
-              page === 1
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-white text-gray-800 hover:bg-gray-100 shadow"
-            }`}
-          >
-            {"<"}
-          </button>
-
-          <span className="text-sm text-gray-700">
-            Page <span className="font-semibold">{page}</span> of{" "}
-            <span className="font-semibold">{totalPages}</span>
-          </span>
-
-          <button
-            onClick={handleNext}
-            disabled={page === totalPages}
-            className={`px-4 py-2 rounded-full border text-sm font-medium transition ${
-              page === totalPages
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-white text-gray-800 hover:bg-gray-100 shadow"
-            }`}
-          >
-            {">"}
-          </button>
-        </div>
       </div>
+
+      <Pagination className="mt-6 font-bold font-mono">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href={`/category/${params.id}?page=${Math.max(
+                1,
+                page - 1
+              )}&limit=${limit}`}
+            />
+          </PaginationItem>
+
+          {[...Array(totalPages)].map((_, idx) => {
+            const pageNum = idx + 1;
+
+            if (pageNum === 1 || pageNum === totalPages || pageNum === page) {
+              return (
+                <PaginationItem key={pageNum}>
+                  <Link
+                    className="font-bold"
+                    href={`/category/${params.id}?page=${pageNum}&limit=${limit}`}
+                  >
+                    {pageNum}
+                  </Link>
+                </PaginationItem>
+              );
+            }
+
+            return null;
+          })}
+
+          <PaginationItem>
+            <PaginationNext
+              href={`/category/${params.id}?page=${Math.min(
+                totalPages,
+                page + 1
+              )}&limit=${limit}`}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }
