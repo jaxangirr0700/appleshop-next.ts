@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useAppDispatch } from "@/store/hooks";
 import { login } from "@/store/slices/auth.slice";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 const formSchema = z.object({
   email: z
@@ -40,6 +41,7 @@ export function LoginForm({ onClose }: { onClose: (open: boolean) => void }) {
       email: "",
     },
   });
+  const router = useRouter();
 
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,6 +54,7 @@ export function LoginForm({ onClose }: { onClose: (open: boolean) => void }) {
         onClose(false);
         dispatch(login(res.data));
         localStorage.setItem("auth", JSON.stringify(res.data));
+        router.push("/user");
       })
       .catch((e) => {
         console.log(e);
@@ -87,7 +90,11 @@ export function LoginForm({ onClose }: { onClose: (open: boolean) => void }) {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your password" {...field} />
+                <Input
+                  type="password"
+                  placeholder="Enter your password"
+                  {...field}
+                />
               </FormControl>
 
               <FormMessage />

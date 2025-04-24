@@ -72,20 +72,12 @@ export function LoginDialog() {
             </DropdownMenuCheckboxItem>{" "}
             <DropdownMenuCheckboxItem
               onClick={() => {
-                router.push("/user");
-              }}
-              className="cursor-pointer"
-            >
-              Online buyurtmalar{" "}
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              onClick={() => {
                 dispatch(logout());
                 router.push("/");
               }}
               className="cursor-pointer"
             >
-              Logout
+              Chiqish
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
