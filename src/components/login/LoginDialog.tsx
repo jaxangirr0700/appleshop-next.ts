@@ -42,10 +42,42 @@ export function LoginDialog() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel className="font-bold">
-              <p className="mb-2 text-xl "> Sozlamalar</p> <p>{user.name}</p>{" "}
-              <p>{user.role}</p>
+              <p className="mb-2 text-xl "> Sozlamalar</p>{" "}
+              <p> Ismi: {user.name}</p> <p> Roli: {user.role}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              onClick={() => {
+                router.push("/user");
+              }}
+              className="cursor-pointer"
+            >
+              Shaxsiy kabinetim
+            </DropdownMenuCheckboxItem>{" "}
+            <DropdownMenuCheckboxItem
+              onClick={() => {
+                router.push("/user");
+              }}
+              className="cursor-pointer"
+            >
+              Maning to{"'"}lo{"'"}vlarim
+            </DropdownMenuCheckboxItem>{" "}
+            <DropdownMenuCheckboxItem
+              onClick={() => {
+                router.push("/user");
+              }}
+              className="cursor-pointer"
+            >
+              to{"'"}lo{"'"}vlar tarixi
+            </DropdownMenuCheckboxItem>{" "}
+            <DropdownMenuCheckboxItem
+              onClick={() => {
+                router.push("/user");
+              }}
+              className="cursor-pointer"
+            >
+              Online buyurtmalar{" "}
+            </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               onClick={() => {
                 dispatch(logout());
@@ -54,14 +86,6 @@ export function LoginDialog() {
               className="cursor-pointer"
             >
               Logout
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              onClick={() => {
-                router.push("/user");
-              }}
-              className="cursor-pointer"
-            >
-              UserPage
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>

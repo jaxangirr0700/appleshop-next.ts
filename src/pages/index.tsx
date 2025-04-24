@@ -11,17 +11,17 @@ export const getServerSideProps: GetServerSideProps<
   HomePagePropsType
 > = async () => {
   try {
-    const res = await axios.get("https://nt.softly.uz/api/front/banners/");
-
-    const banners = res.data;
+    const resBanners = await axios.get(
+      "https://nt.softly.uz/api/front/banners/"
+    );
 
     return {
       props: {
-        banners,
+        banners: resBanners.data,
       },
     };
   } catch (error) {
-    console.error("Banner fetch error:", error);
+    console.error("Data fetch error:", error);
     return {
       props: {
         banners: [],
@@ -29,9 +29,10 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 };
+
 export default function Home({ banners }: HomePagePropsType) {
   return (
-    <div className={` max-w-[1440px] m-auto font-bold`}>
+    <div className="max-w-[1440px] m-auto font-bold">
       <Banner banners={banners} />
       <Products />
     </div>
