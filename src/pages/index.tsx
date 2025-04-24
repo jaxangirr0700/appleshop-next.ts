@@ -1,9 +1,16 @@
-import Banner, { BannerType } from "@/components/Banners";
+import Banner from "@/components/Banners";
 import Products from "@/components/Products";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 
-type HomePagePropsType = {
+export type BannerType = {
+  createdAt: string;
+  id: number;
+  imageUrl: string;
+  isActive: boolean;
+  title: string;
+};
+export type HomePagePropsType = {
   banners: BannerType[];
 };
 

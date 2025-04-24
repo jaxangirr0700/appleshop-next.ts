@@ -1,54 +1,36 @@
+import { HomePagePropsType } from "@/pages";
 import Image from "next/image";
-import * as React from "react";
-import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
-import { Card, CardContent } from "./ui/card";
-// import { useEffect, useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 
-export type BannerType = {
-  createdAt: string;
-  id: number;
-  imageUrl: string;
-  isActive: boolean;
-  title: string;
-};
+function Banner({ banners }: HomePagePropsType) {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-export type BannerProps = {
-  banners: BannerType[];
-};
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
+    }, 1500);
 
-function Banner({ banners }: BannerProps) {
-  // const [prewImg, setPrewImg] = useState<number>(0);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+  console.log(banners);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setPrewImg((prewImg) => (prewImg + 1) % banners.length);
-  //   }, 1000);
-  // }, [banners.length]);
   return (
-    <div className="w-full rounded-xl">
-      <Carousel className="w-full">
-        <CarouselContent>
-          {banners.map((b) => (
-            <CarouselItem key={b.id} className="w-full">
-              <div className="p-2 w-full">
-                <Card className="w-full">
-                  <CardContent className="flex items-center justify-center p-0 w-full">
-                    <div className="relative w-full h-56 sm:h-72 md:h-96">
-                      <Image
-                        src={b.imageUrl}
-                        alt={b.title}
-                        fill
-                        className="object-cover w-full h-full rounded-xl"
-                        priority
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+    <div className="rounded-xl w-full overflow-hidden">
+      <div className="relative w-full h-56 sm:h-72 md:h-96">
+        {banners.map((banner, index) => (
+          <Image
+            key={banner.id}
+            src={banner.imageUrl}
+            alt={banner.title}
+            fill
+            className={`object-cover transition-opacity duration-300 ease-in-out rounded-xl ${
+              index === currentIndex ? "opacity-100" : "opacity-0"
+            }`}
+            priority={index === currentIndex}
+          />
+        ))}
+      </div>
     </div>
   );
 }

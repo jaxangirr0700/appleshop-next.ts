@@ -8,6 +8,7 @@ import {
 } from "@/store/slices/cart.slice";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { ShoppingCart } from "lucide-react";
 
 function KorzinkaModal() {
   const [open, setOpen] = useState<boolean>(false);
@@ -28,7 +29,7 @@ function KorzinkaModal() {
             {products?.length}
           </span>
         )}
-        Savatcha
+        <ShoppingCart />{" "}
       </Button>
       <Dialog
         open={open}
