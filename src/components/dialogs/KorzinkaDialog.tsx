@@ -16,7 +16,6 @@ function KorzinkaModal() {
   const products = useAppSelector((state) => state.product.items);
 
   const dispatch = useAppDispatch();
- 
 
   return (
     <div>
@@ -91,7 +90,12 @@ function KorzinkaModal() {
             ) : (
               <div className="flex flex-col justify-between h-30">
                 <span>Savatcha hozircha bo{"'"}sh</span>
-                <Link href={"/"}>
+                <Link
+                  href={"/"}
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
                   <Button
                     className=" bg-slate-500 text-white hover:text-white hover:bg-slate-900 "
                     variant={"outline"}

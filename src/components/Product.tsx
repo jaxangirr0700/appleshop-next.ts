@@ -35,7 +35,7 @@ function Product({ data }: { data: ProductType | null }) {
       {isClient && (
         <li
           key={data.id}
-          className="max-w-sm rounded-xl relative shadow-md p-4 bg-white pb-20"
+          className="max-w-sm list-none rounded-xl relative shadow-md p-4 bg-white pb-20"
         >
           <Link href={`/product/${data.id}`}>
             <Image

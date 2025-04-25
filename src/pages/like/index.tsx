@@ -1,7 +1,6 @@
 import Product from "@/components/Product";
 import { useAppSelector } from "@/store/hooks";
 import Head from "next/head";
-import React from "react";
 
 function LikesPage() {
   const likeItems = useAppSelector((state) => state.like_product.items);

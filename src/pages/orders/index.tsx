@@ -2,8 +2,6 @@ import { useAppSelector } from "@/store/hooks";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
-import { ProductType } from "@/types";
-
 export type OrdersType = {
   id: number;
   orderId: number;
@@ -30,9 +28,7 @@ export type OrdetDataType = {
 
 function OrdersPage() {
   const [orders, setOrders] = useState<OrdetDataType>();
-  const [productDetails, setProductDetails] = useState<ProductType>();
 
-  const [productId, setProductId] = useState<number>(196);
   const user = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -49,16 +45,6 @@ function OrdersPage() {
         });
     }
   }, [user]);
-  useEffect(() => {
-    axios
-      .get(`https://nt.softly.uz/api/front/products/${productId}`)
-      .then((res) => {
-        setProductDetails(res.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, [productId]);
 
   const orderUser = orders?.items.find(
     (order) => order.customerId === user.user?.id
@@ -90,7 +76,7 @@ function OrdersPage() {
               {orderUser.items.map((item) => (
                 <li key={item.id} className="border-b py-2">
                   <p>
-                    <strong>Product ID:</strong> {productDetails?.name}
+                    <strong>Product ID:</strong> {item?.id}
                   </p>
                   <p>
                     <strong>Soni:</strong> {item.quantity}
