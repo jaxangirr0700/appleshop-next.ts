@@ -10,12 +10,66 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { toast } from "sonner";
 
+const formSchema = z.object({
+  address: z.string().min(2).max(50),
+});
 function KorzinkaModal() {
   const [open, setOpen] = useState<boolean>(false);
   const products = useAppSelector((state) => state.product.items);
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const user = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      address: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    const postValue = {
+      address: values.address,
+      items: products.map((i) => {
+        return { productId: i.id, quantity: i.quantity };
+      }),
+    };
+    console.log(postValue);
+
+    setLoading(true);
+    axios
+      .post(`https://nt.softly.uz/api/front/orders`, postValue, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      })
+      .then(() => {
+        router.push("/user");
+        toast.success("Rasmiylashtirildi");
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <div>
@@ -43,12 +97,12 @@ function KorzinkaModal() {
           <DialogHeader>
             <DialogTitle>Savatcha</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-96 overflow-y-auto ">
             {products.length > 0 ? (
               products.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 border px-1 py-1 rounded-xl border-slate-300  hover:scale-105 transition-all 0.5s"
+                  className="max-w-19/20 flex items-center gap-4 border px-1 py-1 rounded-xl border-slate-300  hover:scale-105 transition-all 0.5s"
                 >
                   <Image
                     src={item.imageUrl}
@@ -79,12 +133,12 @@ function KorzinkaModal() {
                       </button>
                     </div>
                   </div>{" "}
-                  <button
+                  <Button
                     onClick={() => dispatch(deleteCart(item.id))}
-                    className="bg-gray-100 px-2 rounded border border-red-400  py-1 "
+                    className="bg-red-100 text-red-900 px-2 mr-2 rounded border border-red-400  py-1 hover:bg-red-300"
                   >
                     Delete
-                  </button>
+                  </Button>
                 </div>
               ))
             ) : (
@@ -106,6 +160,33 @@ function KorzinkaModal() {
               </div>
             )}
           </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex items-end gap-5"
+            >
+              <Button type="submit">
+                {loading && (
+                  <div className="flex justify-center items-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-4 border-slate-50"></div>
+                  </div>
+                )}
+                Rasmiylashtirish
+              </Button>
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Manzil kiriting !!!" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>

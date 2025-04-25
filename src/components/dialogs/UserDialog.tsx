@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import React from "react";
-const LoginDialog  = dynamic(() => import("../login/LoginDialog"), {ssr:false}) ;
+const LoginDialog = dynamic(() => import("../login/LoginDialog"), {
+  ssr: false,
+});
 
 function UserModal() {
   return (

@@ -1,82 +1,78 @@
 "use client";
-
-import { z } from "zod";
+import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  decrementQty,
-  deleteCart,
-  incrementQty,
-} from "@/store/slices/cart.slice";
+import { useAppSelector } from "@/store/hooks";
+import axios from "axios";
 import { MoveLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
-const formSchema = z.object({
-  address: z.string().min(2, {
-    message: "Manzil kamida 6 ta harfdan iborab bo'lishi kerak!",
-  }),
-});
+export type OrderProductType = {
+  categoryId: number;
+  createdAt: string;
+  description: string;
+  id: number;
+  imageUrl: string;
+  name: string;
+  price: number;
+  stock: number;
+};
+
+export type OrdersType = {
+  id: number;
+  orderId: number;
+  price: number;
+  productId: number;
+  quantity: number;
+  product: OrderProductType;
+};
+
+export type OrderType = {
+  createdAt: string;
+  customerId: number;
+  id: number;
+  items: OrdersType[];
+  status: string;
+  totalPrice: number;
+};
+
+export type OrdetDataType = {
+  items: OrderType[];
+  limit: number;
+  page: number;
+  totalItems: number;
+};
 
 function UserPage() {
   const user = useAppSelector((state) => state.auth);
   const [isClient, setIsClient] = useState(false);
   const products = useAppSelector((state) => state.product.items);
-  const dispatch = useAppDispatch();
   const [routerUserPage, setRouterUserPage] = useState<"userpage" | "orders">(
     "userpage"
   );
-  const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      address: "",
-    },
-  });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const postValue = {
-      address: values.address,
-      items: products.map((i) => {
-        return { productId: i.id, quantity: i.quantity };
-      }),
-    };
-    setLoading(true);
-    axios
-      .post(`https://nt.softly.uz/api/front/orders`, postValue, {
-        headers: {
-          Authorization: `Bearer ${user.accessToken}`,
-        },
-      })
-      .then(() => {
-        router.push("/user");
-        toast.success("Rasmiylashtirildi");
-      })
-      .catch((e) => {
-        console.log(e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
+  const [orders, setOrders] = useState<OrdetDataType>();
+  const orderUser = orders?.items.find(
+    (order) => order.customerId === user.user?.id
+  );
+  console.log(orderUser);
   useEffect(() => {
     setIsClient(true);
   }, []);
+  useEffect(() => {
+    if (user?.accessToken) {
+      axios
+        .get(`https://nt.softly.uz/api/front/orders?`, {
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        })
+        .then((res) => {
+          setOrders(res.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }, [user]);
 
   if (!isClient || !user) return null;
 
@@ -183,86 +179,56 @@ function UserPage() {
 
             <div>
               {products.length > 0 ? (
-                <div className="space-y-4">
-                  <ul className="grid grid-cols-1 gap-4 overflow-y-auto max-h-96 px-2">
-                    {products.map((item) => (
-                      <li
-                        key={item.id}
-                        className="flex  items-center gap-4 border px-4 py-3 rounded-xl border-slate-300 hover:scale-101 transition-all duration-300"
-                      >
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          width={60}
-                          height={60}
-                          className="rounded object-cover"
-                        />
-                        <div className="flex-1">
-                          <p className="font-semibold text-lg">{item.name}</p>
-                          <p className="text-sm text-gray-600">
-                            {item.description}
-                          </p>
-                          <p className="font-bold text-blue-600 mt-1">
-                            {(item.price * item.quantity).toLocaleString()} $
-                          </p>
-                          <div className="flex items-center gap-3 mt-2">
-                            <Button
-                              onClick={() => dispatch(decrementQty(item.id))}
-                              className="bg-gray-200 px-2 rounded text-black text-2xl hover:text-white active:scale-105 transition-all 0.3"
-                            >
-                              -
-                            </Button>
-                            <span>{item.quantity}</span>
-                            <Button
-                              onClick={() => dispatch(incrementQty(item.id))}
-                              className="bg-gray-200 px-2 rounded text-black text-2xl hover:text-white active:scale-105 transition-all 0.3s"
-                            >
-                              +
-                            </Button>
-                            <Button
-                              variant={"outline"}
-                              onClick={() => dispatch(deleteCart(item.id))}
-                              className="bg-gray-100 px-3 py-1 rounded border border-red-400 text-black hover:bg-red-100 transition-all duration-300"
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="flex justify-center items-center gap-2">
-                    <Form {...form}>
-                      <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex items-end gap-5"
-                      >
-                        <Button type="submit">
-                          {loading && (
-                            <div className="flex justify-center items-center">
-                              <div className="animate-spin rounded-full h-5 w-5 border-t-4 border-slate-50"></div>
-                            </div>
-                          )}
-                          Rasmiylashtirish
-                        </Button>
-                        <FormField
-                          control={form.control}
-                          name="address"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Manzil Kiriting</FormLabel>
-                              <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                              </FormControl>
+                <>
+                  {" "}
+                  {orderUser ? (
+                    <div className="space-y-4 bg-white p-6 rounded-lg shadow-lg">
+                      <div>
+                        <p>
+                          <strong>{user.user?.name}</strong>
+                        </p>
+                        <p>
+                          <strong>Buyurtma holati:</strong> {orderUser.status}
+                        </p>
+                        <p>
+                          <strong>Qachon buyurtma qilingani: </strong>{" "}
+                          {new Date(orderUser.createdAt).toLocaleString()}
+                        </p>
+                      </div>
 
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </form>
-                    </Form>
-                  </div>
-                </div>
+                      <div>
+                        <h3 className="text-lg font-semibold">Mahsulotlar:</h3>
+                        <ul className="space-y-2">
+                          {orderUser.items.map((item, indexOrder) => (
+                            <li key={item.id} className="border-b py-2">
+                              <p>{indexOrder + 1}-Buyurtma</p>
+                              <Image
+                                src={item.product.imageUrl}
+                                width={50}
+                                height={50}
+                                alt={item.product.name}
+                              />
+                              <p>Saqlangan vaqti {item.product.createdAt}</p>
+                              <p>
+                                <strong>Soni:</strong> {item.quantity}
+                              </p>
+                              <p>
+                                <strong>Narxi:</strong>{" "}
+                                {item.price.toLocaleString()} UZS
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <p>
+                        <strong>Umumiy Summa:</strong>{" "}
+                        {orderUser.totalPrice.toLocaleString()} UZS
+                      </p>
+                    </div>
+                  ) : (
+                    <Loading />
+                  )}
+                </>
               ) : (
                 <div className="text-xl font-bold text-center text-gray-500">
                   Topilmadi
