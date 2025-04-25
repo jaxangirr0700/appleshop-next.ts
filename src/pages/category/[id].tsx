@@ -4,16 +4,9 @@ import axios from "axios";
 import Head from "next/head";
 import { useParams, useSearchParams } from "next/navigation";
 import React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import Link from "next/link";
+
 import { GetServerSideProps } from "next";
+import PaginationComponent from "@/components/PaginationComponent";
 
 type ServerDataType = {
   data: DataType;
@@ -52,8 +45,6 @@ export const getServerSideProps: GetServerSideProps<ServerDataType> = async (
 };
 
 function CategoryPage({ data }: { data: DataType }) {
-  console.log(data);
-
   const params = useParams();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
@@ -82,69 +73,12 @@ function CategoryPage({ data }: { data: DataType }) {
         </div>
       </div>
 
-      <Pagination className="mt-6 font-bold font-mono">
-        <PaginationContent>
-          {page > 1 && (
-            <PaginationItem>
-              <PaginationPrevious
-                href={`/category/${params.id}?page=${page - 1}&limit=${limit}`}
-                aria-disabled={page === 1}
-              />
-            </PaginationItem>
-          )}
-
-          {[...Array(totalPages)].map((_, index) => {
-            const num = index + 1;
-
-            if (
-              num === 1 ||
-              num === page - 1 ||
-              num === page ||
-              num === page + 1
-            ) {
-              return (
-                <PaginationItem key={num}>
-                  <Link
-                    className={`font-bold ${
-                      page === num ? "text-blue-600 underline" : ""
-                    }`}
-                    href={`/category/${params.id}?page=${num}&limit=${limit}`}
-                  >
-                    {num}
-                  </Link>
-                </PaginationItem>
-              );
-            }
-
-            return null;
-          })}
-
-          {totalPages > 3 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-          <PaginationItem>
-            <Link
-              href={`/category/${params.id}?page=${totalPages}&limit=${limit}`}
-            >
-              {totalPages}
-            </Link>
-          </PaginationItem>
-
-          {page < totalPages && (
-            <PaginationItem>
-              <PaginationNext
-                href={`/category/${params.id}?page=${Math.min(
-                  totalPages,
-                  page + 1
-                )}&limit=${limit}`}
-                aria-disabled={page === totalPages}
-              />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
+      <PaginationComponent
+        currentPage={page}
+        totalPages={totalPages}
+        basePath={`/category/${params.id}`}
+        limit={limit}
+      />
     </div>
   );
 }

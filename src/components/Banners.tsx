@@ -13,7 +13,6 @@ function Banner({ banners }: HomePagePropsType) {
 
     return () => clearInterval(interval);
   }, [banners.length]);
-  console.log(banners);
 
   return (
     <div className="rounded-xl w-full overflow-hidden">

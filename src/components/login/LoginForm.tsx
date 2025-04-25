@@ -101,7 +101,7 @@ export function LoginForm({ onClose }: { onClose: (open: boolean) => void }) {
             </FormItem>
           )}
         />
-        <Button disabled={loading} type="submit">
+        <Button disabled={loading} type="submit" aria-disabled>
           {loading && (
             <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-5 w-5 border-t-4 border-slate-50"></div>

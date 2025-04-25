@@ -20,7 +20,7 @@ import {
 import { logout } from "@/store/slices/auth.slice";
 import { useRouter } from "next/router";
 
-export function LoginDialog() {
+export default function LoginDialog() {
   const [open, setOpen] = useState<boolean>(false);
   const [isClient, setIsClient] = useState<boolean>(false);
   const user = useAppSelector((state) => state.auth.user);

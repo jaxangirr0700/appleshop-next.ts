@@ -30,11 +30,12 @@ function Products() {
     <>
       {loading && <Loading />}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full p-4 mt-3">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {data?.items.map((item: ProductType) => (
           <Product key={item.id} data={item} />
         ))}
-      </div>
+        
+      </ul>
     </>
   );
 }

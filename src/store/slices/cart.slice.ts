@@ -1,3 +1,4 @@
+// cartSlice.ts
 import { ProductType } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -7,10 +8,22 @@ export type CartType = {
   items: CartItemType[];
   search: string;
 };
-const initialState: CartType = {
-  items: [],
-  search: "",
+
+const getInitialCartState = (): CartType => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("carts");
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (err) {
+        console.error("Cart localStorage parsing error:", err);
+      }
+    }
+  }
+  return { items: [], search: "" };
 };
+
+const initialState: CartType = getInitialCartState();
 
 export const cartSlice = createSlice({
   name: "cart",
@@ -26,10 +39,16 @@ export const cartSlice = createSlice({
       } else {
         state.items.push({ ...payload, quantity: 1 });
       }
+      if (typeof window !== "undefined") {
+        localStorage.setItem("carts", JSON.stringify(state));
+      }
     },
     incrementQty: (state, { payload }: { payload: number }) => {
       const item = state.items.find((i) => i.id === payload);
       if (item) item.quantity += 1;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("carts", JSON.stringify(state));
+      }
     },
     decrementQty: (state, { payload }: { payload: number }) => {
       const item = state.items.find((i) => i.id === payload);
@@ -38,11 +57,15 @@ export const cartSlice = createSlice({
       } else {
         state.items = state.items.filter((i) => i.id !== payload);
       }
+      if (typeof window !== "undefined") {
+        localStorage.setItem("carts", JSON.stringify(state));
+      }
     },
     deleteCart: (state, { payload }: { payload: number }) => {
-      state.items = state.items.filter((i) => {
-        return i.id !== payload;
-      });
+      state.items = state.items.filter((i) => i.id !== payload);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("carts", JSON.stringify(state));
+      }
     },
   },
 });

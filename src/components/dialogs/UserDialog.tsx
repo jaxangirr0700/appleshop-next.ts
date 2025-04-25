@@ -1,6 +1,7 @@
+import dynamic from "next/dynamic";
 import React from "react";
-import { LoginDialog } from "../login/LoginDialog";
 
+const LoginDialog = dynamic(() => import("../login/LoginDialog"));
 function UserModal() {
   return (
     <div>

@@ -7,9 +7,21 @@ type LikeState = {
   items: LikeItemType[];
 };
 
-const initialState: LikeState = {
-  items: [],
+const getInitialLikeCart = (): LikeState => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("likeds");
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (err) {
+        console.error("Cart localStorage parsing error:", err);
+      }
+    }
+  }
+  return { items: [] };
 };
+
+const initialState: LikeState = getInitialLikeCart();
 
 export const likeSlice = createSlice({
   name: "like",
@@ -22,9 +34,13 @@ export const likeSlice = createSlice({
       } else {
         state.items.push({ ...payload, isLiked: true });
       }
+      if (typeof window !== "undefined")
+        return localStorage.setItem("likeds", JSON.stringify(state));
     },
     removeLike: (state, { payload }) => {
       state.items = state.items.filter((item) => item.id !== payload);
+      if (typeof window !== "undefined")
+        return localStorage.setItem("likeds", JSON.stringify(state));
     },
   },
 });

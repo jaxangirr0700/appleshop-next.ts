@@ -1,18 +1,79 @@
 "use client";
 
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/store/hooks";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  decrementQty,
+  deleteCart,
+  incrementQty,
+} from "@/store/slices/cart.slice";
 import { MoveLeft } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { toast } from "sonner";
+
+const formSchema = z.object({
+  address: z.string().min(2, {
+    message: "Manzil kamida 6 ta harfdan iborab bo'lishi kerak!",
+  }),
+});
 
 function UserPage() {
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth);
   const [isClient, setIsClient] = useState(false);
+  const products = useAppSelector((state) => state.product.items);
+  const dispatch = useAppDispatch();
   const [routerUserPage, setRouterUserPage] = useState<"userpage" | "orders">(
     "userpage"
   );
-
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      address: "",
+    },
+  });
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    const postValue = {
+      address: values.address,
+      items: products.map((i) => {
+        return { productId: i.id, quantity: i.quantity };
+      }),
+    };
+    setLoading(true);
+    axios
+      .post(`https://nt.softly.uz/api/front/orders`, postValue, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      })
+      .then(() => {
+        router.push("/user");
+        toast.success("Rasmiylashtirildi");
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -36,10 +97,10 @@ function UserPage() {
         <aside className="w-full md:w-1/4 border rounded-lg p-4 space-y-6">
           <div className="flex items-center gap-2">
             <div className="bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
-              {user.name?.charAt(0)}
+              {user?.user?.name?.charAt(0)}
             </div>
             <div>
-              <div>{user.name}</div>
+              <div>{user?.user?.name}</div>
               <div className="text-sm text-gray-500">{"+998940969699"}</div>
             </div>
           </div>
@@ -76,7 +137,7 @@ function UserPage() {
                   O{"'"}zgartirish
                 </button>
               </div>
-              <div>{user.name}</div>
+              <div>{user?.user?.name}</div>
               <div className="text-sm text-gray-500">
                 Telefon: {"+998940969699"}
               </div>
@@ -107,9 +168,9 @@ function UserPage() {
             <div className="border rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
                 <div className="font-bold">Yetkazib berish manzili</div>
-                <button className="text-sm text-blue-500 hover:underline">
+                <Button className="text-sm text-blue-500 hover:underline">
                   Qo{"'"}shish
-                </button>
+                </Button>
               </div>
               <div className="text-sm text-gray-500">
                 Manzil qo{"'"}shilmagan
@@ -117,11 +178,97 @@ function UserPage() {
             </div>
           </main>
         ) : (
-          <div className="w-full md:w-3/4 border rounded-lg p-4">
-            <h2 className="font-bold text-lg mb-2">Buyurtmalar tarixi</h2>
-            <p className="text-sm text-gray-500">
-              Hozircha buyurtmalar mavjud emas.
-            </p>
+          <div className="w-full max-w-2/3 border rounded-lg p-4">
+            <h2 className="font-bold text-lg mb-4">Buyurtmalar tarixi</h2>
+
+            <div>
+              {products.length > 0 ? (
+                <div className="space-y-4">
+                  <ul className="grid grid-cols-1 gap-4 overflow-y-auto max-h-96 px-2">
+                    {products.map((item) => (
+                      <li
+                        key={item.id}
+                        className="flex  items-center gap-4 border px-4 py-3 rounded-xl border-slate-300 hover:scale-101 transition-all duration-300"
+                      >
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          width={60}
+                          height={60}
+                          className="rounded object-cover"
+                        />
+                        <div className="flex-1">
+                          <p className="font-semibold text-lg">{item.name}</p>
+                          <p className="text-sm text-gray-600">
+                            {item.description}
+                          </p>
+                          <p className="font-bold text-blue-600 mt-1">
+                            {(item.price * item.quantity).toLocaleString()} $
+                          </p>
+                          <div className="flex items-center gap-3 mt-2">
+                            <Button
+                              onClick={() => dispatch(decrementQty(item.id))}
+                              className="bg-gray-200 px-2 rounded text-black text-2xl hover:text-white active:scale-105 transition-all 0.3"
+                            >
+                              -
+                            </Button>
+                            <span>{item.quantity}</span>
+                            <Button
+                              onClick={() => dispatch(incrementQty(item.id))}
+                              className="bg-gray-200 px-2 rounded text-black text-2xl hover:text-white active:scale-105 transition-all 0.3s"
+                            >
+                              +
+                            </Button>
+                            <Button
+                              variant={"outline"}
+                              onClick={() => dispatch(deleteCart(item.id))}
+                              className="bg-gray-100 px-3 py-1 rounded border border-red-400 text-black hover:bg-red-100 transition-all duration-300"
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex justify-center items-center gap-2">
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="flex items-end gap-5"
+                      >
+                        <Button type="submit">
+                          {loading && (
+                            <div className="flex justify-center items-center">
+                              <div className="animate-spin rounded-full h-5 w-5 border-t-4 border-slate-50"></div>
+                            </div>
+                          )}
+                          Rasmiylashtirish
+                        </Button>
+                        <FormField
+                          control={form.control}
+                          name="address"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Manzil Kiriting</FormLabel>
+                              <FormControl>
+                                <Input placeholder="shadcn" {...field} />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </form>
+                    </Form>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xl font-bold text-center text-gray-500">
+                  Topilmadi
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
