@@ -30,7 +30,7 @@ export type OrdetDataType = {
 
 function OrdersPage() {
   const [orders, setOrders] = useState<OrdetDataType>();
-  const [productDetails, setProductDetails] = useState<ProductType>(null);
+  const [productDetails, setProductDetails] = useState<ProductType>();
 
   const [productId, setProductId] = useState<number>(196);
   const user = useAppSelector((state) => state.auth);
