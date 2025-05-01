@@ -47,7 +47,7 @@ export type OrdetDataType = {
 function UserPage() {
   const user = useAppSelector((state) => state.auth);
   const [isClient, setIsClient] = useState(false);
-  const products = useAppSelector((state) => state.product.items);
+  const products = useAppSelector((state) => state.product?.items ?? [{}, {}]);
   const [routerUserPage, setRouterUserPage] = useState<"userpage" | "orders">(
     "userpage"
   );
@@ -55,7 +55,6 @@ function UserPage() {
   const orderUser = orders?.items.find(
     (order) => order.customerId === user.user?.id
   );
-  console.log(orderUser);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -180,7 +179,6 @@ function UserPage() {
             <div>
               {products.length > 0 ? (
                 <>
-                  {" "}
                   {orderUser ? (
                     <div className="space-y-4 bg-white p-6 rounded-lg shadow-lg">
                       <div>

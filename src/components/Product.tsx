@@ -3,7 +3,6 @@ import { addToCart } from "@/store/slices/cart.slice";
 import { removeLike, toggleLike } from "@/store/slices/like.slice";
 import { ProductType } from "@/types";
 import { Heart, ShoppingCart } from "lucide-react";
-// import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -43,7 +42,7 @@ function Product({ data }: { data: ProductType | null }) {
               height={300}
               alt={data.name}
               src={data.imageUrl}
-              className="object-bottom h-70 w-full hover:scale-105 transition-transform duration-500"
+              className="object-cover h-96 w-full hover:scale-103 transition-transform duration-200"
             />
           </Link>
           <div className="mt-4">

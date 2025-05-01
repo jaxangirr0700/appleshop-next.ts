@@ -3,10 +3,9 @@ import { DataType } from "@/types";
 import axios from "axios";
 import Head from "next/head";
 import { useParams, useSearchParams } from "next/navigation";
-import React from "react";
 
-import { GetServerSideProps } from "next";
 import PaginationComponent from "@/components/PaginationComponent";
+import { GetServerSideProps } from "next";
 
 type ServerDataType = {
   data: DataType;
@@ -49,7 +48,7 @@ function CategoryPage({ data }: { data: DataType }) {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
   const limit = parseInt(searchParams.get("limit") || "10", 10);
-  const totalPages = Math.ceil(data.totalItems / limit);
+  const totalPages = Math.ceil(data?.totalItems / limit);
 
   return (
     <div className="max-w-[1440px] m-auto">
@@ -76,7 +75,7 @@ function CategoryPage({ data }: { data: DataType }) {
       <PaginationComponent
         currentPage={page}
         totalPages={totalPages}
-        basePath={`/category/${params.id}`}
+        basePath={`/category/${params.id}`} 
         limit={limit}
       />
     </div>

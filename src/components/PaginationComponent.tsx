@@ -1,12 +1,8 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-} from "@/components/ui/pagination";
-import { useRouter } from "next/router";
+import { Pagination } from "@/components/ui/pagination";
+import dynamic from "next/dynamic";
+const PaginContent = dynamic(() => import("./hydration.errors/PaginContent"), {
+  ssr: false,
+});
 
 type Props = {
   currentPage: number;
@@ -21,91 +17,29 @@ const PaginationComponent = ({
   basePath,
   limit,
 }: Props) => {
-  const router = useRouter();
-
-  const goToPage = (page: number, newLimit = limit) => {
-    router.push({
-      pathname: basePath,
-      query: {
-        page,
-        limit: newLimit,
-      },
-    });
-  };
-
-  const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLimit = parseInt(e.target.value, 10);
-    goToPage(1, newLimit);
+  const buildLink = (page: number) => {
+    return `${basePath}?page=${page}&limit=${2}`;
   };
 
   return (
     <div className="flex flex-col items-center gap-4 mt-6">
       <Pagination className="font-mono font-bold">
-        <PaginationContent>
-          {currentPage > 1 && (
-            <PaginationItem>
-              <button onClick={() => goToPage(currentPage - 1)}>
-                <PaginationPrevious />
-              </button>
-            </PaginationItem>
-          )}
-
-          {[...Array(totalPages)].map((_, index) => {
-            const num = index + 1;
-
-            if (
-              num === 1 ||
-              num === currentPage - 1 ||
-              num === currentPage ||
-              num === currentPage + 1 ||
-              num === totalPages
-            ) {
-              return (
-                <PaginationItem key={num}>
-                  <button
-                    onClick={() => goToPage(num)}
-                    className={`px-2 ${
-                      currentPage === num
-                        ? "text-blue-600 underline"
-                        : "hover:text-blue-500"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                </PaginationItem>
-              );
-            }
-
-            if (
-              (num === 2 && currentPage > 3) ||
-              (num === totalPages - 1 && currentPage < totalPages - 2)
-            ) {
-              return (
-                <PaginationItem key={`ellipsis-${num}`}>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              );
-            }
-
-            return null;
-          })}
-
-          {currentPage < totalPages && (
-            <PaginationItem>
-              <button onClick={() => goToPage(currentPage + 1)}>
-                <PaginationNext />
-              </button>
-            </PaginationItem>
-          )}
-        </PaginationContent>
+        <PaginContent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          buildLink={buildLink}
+        />
       </Pagination>
 
       <div className="flex items-center gap-2">
-        <label className="text-sm font-medium">Sahifada ko‘rsatish:</label>
+        <label className="text-sm font-medium">Sahifada ko{"'"}rsatish:</label>
         <select
-          onChange={handleLimitChange}
-          value={limit}
           className="border px-3 py-1 rounded"
+          value={limit}
+          onChange={(e) => {
+            const newLimit = parseInt(e.target.value, 10);
+            window.location.href = `${basePath}?page=1&limit=${newLimit}`;
+          }}
         >
           <option value="10">10 ta</option>
           <option value="20">20 ta</option>

@@ -20,7 +20,7 @@ function Categories() {
 
   return (
     <div>
-      <ul className="flex items-center flex-wrap gap-2 justify-between py-4">
+      <ul className="flex md:px-20 items-center flex-wrap gap-2 justify-between py-4">
         {categories.map((category) => (
           <Button
             variant={"outline"}

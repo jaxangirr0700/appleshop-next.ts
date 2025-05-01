@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import Image from "next/image";
 import {
   decrementQty,
   deleteCart,
   incrementQty,
 } from "@/store/slices/cart.slice";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { ShoppingCart } from "lucide-react";
-import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -19,19 +24,23 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
-import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { toast } from "sonner";
+import dynamic from "next/dynamic";
+const KorzDiaologButton = dynamic(
+  () => import("../hydration.errors/KorzDiaologButton"),
+  { ssr: false }
+);
 
 const formSchema = z.object({
-  address: z.string().min(2).max(50),
+  address: z
+    .string()
+    .min(2, "Manzil kamida 2 harfdan iborat bo'lishi kerak")
+    .max(50),
 });
+
 function KorzinkaModal() {
-  const [open, setOpen] = useState<boolean>(false);
-  const products = useAppSelector((state) => state.product.items);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const products = useAppSelector((state) => state.product?.items ?? []);
   const user = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -43,66 +52,56 @@ function KorzinkaModal() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const postValue = {
       address: values.address,
-      items: products.map((i) => {
-        return { productId: i.id, quantity: i.quantity };
-      }),
+      items: products.map((i) => ({
+        productId: i.id,
+        quantity: i.quantity,
+      })),
     };
-    console.log(postValue);
 
     setLoading(true);
-    axios
-      .post(`https://nt.softly.uz/api/front/orders`, postValue, {
+    try {
+      await axios.post(`https://nt.softly.uz/api/front/orders`, postValue, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },
-      })
-      .then(() => {
-        router.push("/user");
-        toast.success("Rasmiylashtirildi");
-      })
-      .catch((e) => {
-        console.log(e);
-      })
-      .finally(() => {
-        setLoading(false);
       });
+      toast.success("Rasmiylashtirildi!");
+      localStorage.removeItem("carts");
+      router.push("/user");
+    } catch (error) {
+      console.error(error);
+      toast.error("Xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (!Array.isArray(products)) {
+    return <p>Mahsulotlar topilmadi</p>;
   }
-
   return (
     <div>
-      <Button
-        className="relative "
-        variant={"outline"}
-        onClick={() => {
+      <KorzDiaologButton
+        setOpen={() => {
           setOpen(true);
         }}
-      >
-        {products.length > 0 && (
-          <span className=" absolute top-[-15px] right-[-15px] bg-slate-800 text-white text-xl px-2 py-1 font-mono rounded-full">
-            {products?.length}
-          </span>
-        )}
-        <ShoppingCart />{" "}
-      </Button>
-      <Dialog
-        open={open}
-        onOpenChange={(open) => {
-          setOpen(open);
-        }}
-      >
+        products={products}
+      />
+
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Savatcha</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 max-h-96 overflow-y-auto ">
+
+          <div className="space-y-4 max-h-96 overflow-y-auto">
             {products.length > 0 ? (
               products.map((item) => (
                 <div
                   key={item.id}
-                  className="max-w-19/20 flex items-center gap-4 border px-1 py-1 rounded-xl border-slate-300  hover:scale-105 transition-all 0.5s"
+                  className="flex items-center gap-4 border px-2 py-2 rounded-xl border-slate-300 hover:scale-105 transition-all"
                 >
                   <Image
                     src={item.imageUrl}
@@ -132,61 +131,58 @@ function KorzinkaModal() {
                         +
                       </button>
                     </div>
-                  </div>{" "}
+                  </div>
                   <Button
                     onClick={() => dispatch(deleteCart(item.id))}
-                    className="bg-red-100 text-red-900 px-2 mr-2 rounded border border-red-400  py-1 hover:bg-red-300"
+                    className="bg-red-100 text-red-900 px-2 mr-2 rounded border border-red-400 py-1 hover:bg-red-300"
                   >
                     Delete
                   </Button>
                 </div>
               ))
             ) : (
-              <div className="flex flex-col justify-between h-30">
+              <div className="flex flex-col items-center justify-center space-y-4">
                 <span>Savatcha hozircha bo{"'"}sh</span>
-                <Link
-                  href={"/"}
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                >
-                  <Button
-                    className=" bg-slate-500 text-white hover:text-white hover:bg-slate-900 "
-                    variant={"outline"}
-                  >
-                    Haridlar Sari
+                <Link href="/" onClick={() => setOpen(false)}>
+                  <Button className="bg-slate-500 text-white hover:bg-slate-900">
+                    Haridlar sari
                   </Button>
                 </Link>
               </div>
             )}
           </div>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex items-end gap-5"
-            >
-              <Button type="submit">
-                {loading && (
-                  <div className="flex justify-center items-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-4 border-slate-50"></div>
-                  </div>
-                )}
-                Rasmiylashtirish
-              </Button>
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Manzil kiriting !!!" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
+
+          {products.length > 0 && (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex items-end gap-5 mt-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Manzil kiriting..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-t-4 border-white" />
+                      Yuklanmoqda...
+                    </div>
+                  ) : (
+                    "Rasmiylashtirish"
+                  )}
+                </Button>
+              </form>
+            </Form>
+          )}
         </DialogContent>
       </Dialog>
     </div>

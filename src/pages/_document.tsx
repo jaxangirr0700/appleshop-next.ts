@@ -1,6 +1,4 @@
-import { store } from "@/store/store";
 import { Html, Head, Main, NextScript } from "next/document";
-import { Provider } from "react-redux";
 
 export default function Document() {
   return (
@@ -15,12 +13,8 @@ export default function Document() {
       </Head>
 
       <body className="antialiased">
-        <Provider store={store}>
-          <div className="container m-auto">
-            <Main />
-            <NextScript />
-          </div>
-        </Provider>
+        <Main />
+        <NextScript />
       </body>
     </Html>
   );

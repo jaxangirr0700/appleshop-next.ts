@@ -1,9 +1,9 @@
+import { useAppSelector } from "@/store/hooks";
+import { DataType, ProductType } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
-import { DataType, ProductType } from "@/types";
 import Product from "./Product";
-import { useAppSelector } from "@/store/hooks";
 
 function Products() {
   const [data, setData] = useState<DataType | null>(null);
@@ -34,8 +34,8 @@ function Products() {
         {data?.items.map((item: ProductType) => (
           <Product key={item.id} data={item} />
         ))}
-        
       </ul>
+      
     </>
   );
 }
