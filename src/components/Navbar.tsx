@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setSearch } from "@/store/slices/cart.slice";
-import { AlignJustify, HeartIcon, Search, X } from "lucide-react";
+import { AlignJustify, Search, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import Categories from "./Categories";
@@ -8,6 +9,10 @@ import KorzinkaModal from "./dialogs/KorzinkaDialog";
 import UserModal from "./dialogs/UserDialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+const NavbarLikeButton = dynamic(
+  () => import("./hydration.errors/NavbarLikeButton"),
+  { ssr: false }
+);
 
 const Navbar = () => {
   const [katalogState, setKatalogState] = useState<boolean>(true);
@@ -63,18 +68,7 @@ const Navbar = () => {
             <UserModal />
 
             <Link href="/like">
-              <Button
-                variant="outline"
-                className="relative flex items-center justify-center gap-1 text-sm"
-              >
-                <HeartIcon className="w-4 h-4" />
-                <span className="hidden sm:inline"></span>
-                {likeItems.length > 0 && (
-                  <span className="bg-slate-900 text-white px-2 py-1 rounded-full text-xs absolute -top-3 -right-3">
-                    {likeItems.length}
-                  </span>
-                )}
-              </Button>
+              <NavbarLikeButton likeItems={likeItems} />
             </Link>
 
             <KorzinkaModal />

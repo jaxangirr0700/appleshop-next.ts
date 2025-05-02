@@ -1,69 +1,67 @@
 // pages/product/[id].tsx
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Loading from "@/components/Loading";
-import { ProductType } from "@/types";
 import Product from "@/components/Product";
+import { ProductType } from "@/types";
+import axios from "axios";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
 
-function ProductDetail() {
-  const router = useRouter();
-  const { id } = router.query;
-  const [product, setProduct] = useState<ProductType>();
-  const [similarProducts, setSimilarProducts] = useState<ProductType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+type Props = {
+  product: ProductType | null;
+  similarProducts: ProductType[];
+};
 
-  useEffect(() => {
-    if (id) {
-      setLoading(true);
-      axios
-        .get(`https://nt.softly.uz/api/front/products/${id}`)
-        .then((res) => {
-          setProduct(res.data);
-        })
-        .catch((err) => {
-          console.error("Error fetching product:", err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [id]);
+export const getServerSideProps: GetServerSideProps<Props> = async (contex) => {
+  const { id } = contex.params as { id: string };
 
-  useEffect(() => {
+  try {
+    const resProducts = await axios.get(
+      `https://nt.softly.uz/api/front/products/${id}`
+    );
+    const product = resProducts.data;
+
+    let similarProducts: ProductType[] = [];
     if (product?.categoryId) {
-      axios
-        .get(
-          `https://nt.softly.uz/api/front/products?categoryId=${product.categoryId}`
-        )
-        .then((res) => {
-          setSimilarProducts(res.data.items || []);
-        })
-        .catch((err) => {
-          console.error("Error fetching similar products:", err);
-        });
+      const resSimilarProducts = await axios.get(
+        `https://nt.softly.uz/api/front/products?categoryId=${product.categoryId}`
+      );
+      similarProducts = resSimilarProducts.data.items || [];
     }
-  }, [product]);
+    return {
+      props: {
+        product,
+        similarProducts,
+      },
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      props: {
+        product: null,
+        similarProducts: [],
+      },
+    };
+  }
+};
 
-  if (loading) {
+function ProductDetail({ product, similarProducts }: Props) {
+  if (!product) {
     return (
-      <div className="max-w-[1440px] m-auto">
-        <Loading />
-      </div>
+      <div className="text-center py-10 text-red-500">Mahsulot topilmadi</div>
     );
   }
 
   return (
-    <div className="max-w-[1440px] m-auto flex items-center  gap-1 flex-col">
-      {product && <Product data={product} />}
+    <div className="max-w-[1440px] m-auto flex items-center flex-col">
       <Head>
-        <title>ProductPage</title>
+        <title>{product.name} - Mahsulot</title>
         <meta content={product?.name} name="description" />
       </Head>
+
+      <Product data={product} />
+
       {similarProducts.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Similar Products</h2>
+        <div className="mt-8 w-full">
+          <h2 className="text-xl font-bold mb-4">O{"'"}xshash mahsulotlar</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {similarProducts.map((item) => (
               <Product key={item.id} data={item} />

@@ -1,8 +1,18 @@
 import { Pagination } from "@/components/ui/pagination";
 import dynamic from "next/dynamic";
-const PaginContent = dynamic(() => import("./hydration.errors/PaginContent"), {
-  ssr: false,
-});
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+const PagContent = dynamic(
+  () => import("../components/hydration.errors/PagContent"),
+  {
+    ssr: true,
+  }
+);
 
 type Props = {
   currentPage: number;
@@ -24,7 +34,7 @@ const PaginationComponent = ({
   return (
     <div className="flex flex-col items-center gap-4 mt-6">
       <Pagination className="font-mono font-bold">
-        <PaginContent
+        <PagContent
           currentPage={currentPage}
           totalPages={totalPages}
           buildLink={buildLink}
@@ -33,18 +43,22 @@ const PaginationComponent = ({
 
       <div className="flex items-center gap-2">
         <label className="text-sm font-medium">Sahifada ko{"'"}rsatish:</label>
-        <select
-          className="border px-3 py-1 rounded"
-          value={limit}
-          onChange={(e) => {
-            const newLimit = parseInt(e.target.value, 10);
+        <Select
+          defaultValue={limit.toString()}
+          onValueChange={(value) => {
+            const newLimit = parseInt(value, 10);
             window.location.href = `${basePath}?page=1&limit=${newLimit}`;
           }}
         >
-          <option value="10">10 ta</option>
-          <option value="20">20 ta</option>
-          <option value="50">50 ta</option>
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder={`Ko‘rsatish: ${limit}`} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10 ta</SelectItem>
+            <SelectItem value="20">20 ta</SelectItem>
+            <SelectItem value="50">50 ta</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

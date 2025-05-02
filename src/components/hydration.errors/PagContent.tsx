@@ -13,7 +13,7 @@ const PaginationLink = dynamic(
   }
 );
 
-function PaginContent({
+function PagContent({
   currentPage,
   buildLink,
   totalPages,
@@ -78,4 +78,4 @@ function PaginContent({
   );
 }
 
-export default PaginContent;
+export default PagContent;

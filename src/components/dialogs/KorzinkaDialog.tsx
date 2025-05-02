@@ -15,6 +15,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import {
+  Trash
+} from "lucide-react";
+import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import {
@@ -24,7 +28,6 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
-import dynamic from "next/dynamic";
 const KorzDiaologButton = dynamic(
   () => import("../hydration.errors/KorzDiaologButton"),
   { ssr: false }
@@ -91,17 +94,17 @@ function KorzinkaModal() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className=" max-w-[1000px]">
           <DialogHeader>
             <DialogTitle>Savatcha</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="space-y-4 max-h-96  overflow-y-auto">
             {products.length > 0 ? (
               products.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 border px-2 py-2 rounded-xl border-slate-300 hover:scale-105 transition-all"
+                  className="flex items-center gap-4 border px-2 py-2 rounded-xl border-slate-300 hover:scale-101 transition-all"
                 >
                   <Image
                     src={item.imageUrl}
@@ -117,26 +120,28 @@ function KorzinkaModal() {
                       {(item.price * item.quantity).toLocaleString()} $
                     </p>
                     <div className="flex items-center gap-2 mt-2">
-                      <button
+                      <Button
                         onClick={() => dispatch(decrementQty(item.id))}
-                        className="bg-gray-200 px-2 rounded"
+                        className=" px-2 rounded"
                       >
                         -
-                      </button>
+                      </Button>
                       <span>{item.quantity}</span>
-                      <button
+                      <Button
                         onClick={() => dispatch(incrementQty(item.id))}
-                        className="bg-gray-200 px-2 rounded"
+                        className=" px-2 rounded"
                       >
                         +
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   <Button
+                    variant={"outline"}
+                    color="red"
                     onClick={() => dispatch(deleteCart(item.id))}
-                    className="bg-red-100 text-red-900 px-2 mr-2 rounded border border-red-400 py-1 hover:bg-red-300"
+                    className="bg-red-100 text-red-900 px-2 mr-2  border border-red-400 py-1 hover:bg-red-300"
                   >
-                    Delete
+                    <Trash />
                   </Button>
                 </div>
               ))

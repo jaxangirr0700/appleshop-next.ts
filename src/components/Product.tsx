@@ -6,6 +6,8 @@ import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
 
 function Product({ data }: { data: ProductType | null }) {
   const dispatch = useAppDispatch();
@@ -32,7 +34,7 @@ function Product({ data }: { data: ProductType | null }) {
   return (
     <>
       {isClient && (
-        <li
+        <Card
           key={data.id}
           className="max-w-sm list-none rounded-xl relative shadow-md p-4 bg-white pb-20"
         >
@@ -42,7 +44,7 @@ function Product({ data }: { data: ProductType | null }) {
               height={300}
               alt={data.name}
               src={data.imageUrl}
-              className="object-cover h-96 w-full hover:scale-103 transition-transform duration-200"
+              className="object-cover h-96 rounded-2xl w-full hover:scale-103 transition-transform duration-200"
             />
           </Link>
           <div className="mt-4">
@@ -50,7 +52,7 @@ function Product({ data }: { data: ProductType | null }) {
             <p className="text-gray-700 mt-2">{data.description}</p>
             <p className="text-lg font-bold mt-2">${data.price}</p>
             <p className="text-gray-800 mt-1">Stock: {data.stock}</p>
-            <button
+            <Button
               onClick={() => dispatch(addToCart(data))}
               className={`flex items-center gap-2 mt-4 px-4 py-2 bg-slate-900 text-white rounded hover:bg-slate-600 absolute right-9 bottom-3 transition-all duration-300 ${
                 isProductInCart
@@ -64,8 +66,8 @@ function Product({ data }: { data: ProductType | null }) {
                 size={30}
                 className="hover:scale-110 transition-transform duration-300"
               />
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => toggleLikePage(data)}
               className={`flex items-center gap-2 mt-4 px-4 py-2 bg-transparent rounded hover:bg-neutral-100 absolute right-0 top-5 ${
                 isProductLiked ? "text-red-500" : ""
@@ -75,9 +77,9 @@ function Product({ data }: { data: ProductType | null }) {
                 style={{ width: 40, fontSize: 28 }}
                 className="cursor-pointer hover:scale-110 transition-transform duration-500"
               />
-            </button>
+            </Button>
           </div>
-        </li>
+        </Card>
       )}
     </>
   );

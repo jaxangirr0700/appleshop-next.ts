@@ -14,7 +14,6 @@ type ServerDataType = {
 export const getServerSideProps: GetServerSideProps<ServerDataType> = async (
   args
 ) => {
-  console.log(args.query);
   const { page, limit, id } = args.query;
 
   try {
@@ -65,7 +64,7 @@ function CategoryPage({ data }: { data: DataType }) {
           Kategoriya bo{"'"}yicha mahsulotlar
         </h1>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
           {data?.items?.map((item) => (
             <Product data={item} key={item.id} />
           ))}
@@ -75,7 +74,7 @@ function CategoryPage({ data }: { data: DataType }) {
       <PaginationComponent
         currentPage={page}
         totalPages={totalPages}
-        basePath={`/category/${params.id}`} 
+        basePath={`/category/${params.id}`}
         limit={limit}
       />
     </div>
