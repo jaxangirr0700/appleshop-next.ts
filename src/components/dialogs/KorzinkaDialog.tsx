@@ -61,7 +61,6 @@ function KorzinkaModal() {
         quantity: i.quantity,
       })),
     };
-    console.log(postValue);
 
     setLoading(true);
     try {
@@ -94,17 +93,17 @@ function KorzinkaModal() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className=" max-w-[1000px]">
+        <DialogContent className="max-w-[1000px]">
           <DialogHeader>
             <DialogTitle>Savatcha</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 max-h-96  overflow-y-auto">
+          <div className="space-y-2 max-h-96 flex flex-col  overflow-y-auto">
             {products.length > 0 ? (
               products.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 border px-2 py-2 rounded-xl border-slate-300 hover:scale-101 transition-all"
+                  className="flex items-center gap-4 border px-2 py-2 mx-1 rounded-xl border-slate-300 hover:scale-101 transition-all "
                 >
                   <Image
                     src={item.imageUrl}
