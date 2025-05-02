@@ -15,9 +15,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import {
-  Trash
-} from "lucide-react";
+import { Trash } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
@@ -63,6 +61,7 @@ function KorzinkaModal() {
         quantity: i.quantity,
       })),
     };
+    console.log(postValue);
 
     setLoading(true);
     try {
@@ -74,6 +73,7 @@ function KorzinkaModal() {
       toast.success("Rasmiylashtirildi!");
       localStorage.removeItem("carts");
       router.push("/user");
+      setOpen(false);
     } catch (error) {
       console.error(error);
       toast.error("Xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");

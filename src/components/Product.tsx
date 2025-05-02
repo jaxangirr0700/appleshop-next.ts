@@ -8,6 +8,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import { toast } from "sonner";
 
 function Product({ data }: { data: ProductType | null }) {
   const dispatch = useAppDispatch();
@@ -53,7 +54,10 @@ function Product({ data }: { data: ProductType | null }) {
             <p className="text-lg font-bold mt-2">${data.price}</p>
             <p className="text-gray-800 mt-1">Stock: {data.stock}</p>
             <Button
-              onClick={() => dispatch(addToCart(data))}
+              onClick={() => {
+                dispatch(addToCart(data));
+                toast.success("Korzinkaga Qo'shildi");
+              }}
               className={`flex items-center gap-2 mt-4 px-4 py-2 bg-slate-900 text-white rounded hover:bg-slate-600 absolute right-9 bottom-3 transition-all duration-300 ${
                 isProductInCart
                   ? "opacity-50 cursor-not-allowed"
@@ -69,12 +73,12 @@ function Product({ data }: { data: ProductType | null }) {
             </Button>
             <Button
               onClick={() => toggleLikePage(data)}
-              className={`flex items-center gap-2 mt-4 px-4 py-2 bg-transparent rounded hover:bg-neutral-100 absolute right-0 top-5 ${
+              className={`flex items-center mt-4 w-12 px-2 py-1 bg-transparent rounded-full  hover:bg-neutral-100 text-white absolute right-4 top-5 ${
                 isProductLiked ? "text-red-500" : ""
               }`}
             >
               <Heart
-                style={{ width: 40, fontSize: 28 }}
+                style={{ width: 60, fontSize: 52 }}
                 className="cursor-pointer hover:scale-110 transition-transform duration-500"
               />
             </Button>

@@ -47,7 +47,7 @@ export type OrdetDataType = {
 function UserPage() {
   const user = useAppSelector((state) => state.auth);
   const [isClient, setIsClient] = useState(false);
-  const products = useAppSelector((state) => state.product?.items ?? [{}, {}]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [routerUserPage, setRouterUserPage] = useState<"userpage" | "orders">(
     "userpage"
   );
@@ -60,6 +60,7 @@ function UserPage() {
   }, []);
   useEffect(() => {
     if (user?.accessToken) {
+      setLoading(true);
       axios
         .get(`https://nt.softly.uz/api/front/orders?`, {
           headers: { Authorization: `Bearer ${user.accessToken}` },
@@ -69,6 +70,9 @@ function UserPage() {
         })
         .catch((e) => {
           console.log(e);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [user]);
@@ -102,16 +106,20 @@ function UserPage() {
 
           <div className="flex gap-2 flex-col">
             <Button
+              onClick={() => {
+                setRouterUserPage("userpage");
+              }}
               variant="outline"
-              onClick={() =>
-                setRouterUserPage((prev) =>
-                  prev === "userpage" ? "orders" : "userpage"
-                )
-              }
             >
-              {routerUserPage === "orders"
-                ? "Online buyurtmalar"
-                : "Shaxsiy kabinet"}
+              Shaxsiy kabinet
+            </Button>
+            <Button
+              onClick={() => {
+                setRouterUserPage("orders");
+              }}
+              variant="outline"
+            >
+              Online buyurtmalar
             </Button>
             <Button variant="outline">
               Mening to{"'"}lo{"'"}vlarim
@@ -177,61 +185,58 @@ function UserPage() {
             <h2 className="font-bold text-lg mb-4">Buyurtmalar tarixi</h2>
 
             <div>
-              {products.length > 0 ? (
-                <>
-                  {orderUser ? (
-                    <div className="space-y-4 bg-white p-6 rounded-lg shadow-lg">
-                      <div>
-                        <p>
-                          <strong>{user.user?.name}</strong>
-                        </p>
-                        <p>
-                          <strong>Buyurtma holati:</strong> {orderUser.status}
-                        </p>
-                        <p>
-                          <strong>Qachon buyurtma qilingani: </strong>{" "}
-                          {new Date(orderUser.createdAt).toLocaleString()}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-semibold">Mahsulotlar:</h3>
-                        <ul className="space-y-2">
-                          {orderUser.items.map((item, indexOrder) => (
-                            <li key={item.id} className="border-b py-2">
-                              <p>{indexOrder + 1}-Buyurtma</p>
-                              <Image
-                                src={item.product.imageUrl}
-                                width={50}
-                                height={50}
-                                alt={item.product.name}
-                              />
-                              <p>Saqlangan vaqti {item.product.createdAt}</p>
-                              <p>
-                                <strong>Soni:</strong> {item.quantity}
-                              </p>
-                              <p>
-                                <strong>Narxi:</strong>{" "}
-                                {item.price.toLocaleString()} UZS
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+              <>
+                {loading && <Loading />}{" "}
+                {orderUser ? (
+                  <div className="space-y-4 bg-white p-6 rounded-lg shadow-lg">
+                    <div>
                       <p>
-                        <strong>Umumiy Summa:</strong>{" "}
-                        {orderUser.totalPrice.toLocaleString()} UZS
+                        <strong>{user.user?.name}</strong>
+                      </p>
+                      <p>
+                        <strong>Buyurtma holati:</strong> {orderUser.status}
+                      </p>
+                      <p>
+                        <strong>Qachon buyurtma qilingani: </strong>{" "}
+                        {new Date(orderUser.createdAt).toLocaleString()}
                       </p>
                     </div>
-                  ) : (
-                    <Loading />
-                  )}
-                </>
-              ) : (
-                <div className="text-xl font-bold text-center text-gray-500">
-                  Topilmadi
-                </div>
-              )}
+
+                    <div>
+                      <h3 className="text-lg font-semibold">Mahsulotlar:</h3>
+                      <ul className="space-y-2">
+                        {orderUser.items.map((item, indexOrder) => (
+                          <li key={item.id} className="border-b py-2">
+                            <p>{indexOrder + 1}-Buyurtma</p>
+                            <Image
+                              src={item.product.imageUrl}
+                              width={50}
+                              height={50}
+                              alt={item.product.name}
+                            />
+                            <p>Saqlangan vaqti {item.product.createdAt}</p>
+                            <p>
+                              <strong>Soni:</strong> {item.quantity}
+                            </p>
+                            <p>
+                              <strong>Narxi:</strong>{" "}
+                              {item.price.toLocaleString()} UZS
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <p>
+                      <strong>Umumiy Summa:</strong>{" "}
+                      {orderUser.totalPrice.toLocaleString()} UZS
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-xl font-bold text-center text-gray-500">
+                    Topilmadi
+                  </div>
+                )}
+              </>
             </div>
           </div>
         )}
